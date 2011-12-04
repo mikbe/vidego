@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Mike Bethany"]
   s.email       = ["mikbe.tk@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{Easily convert videos for steaming and local use on your portable devices.}
+  s.summary     = %q{Easily convert videos for use with your portable devices.}
   s.description = %q{Vidego, short for Video-To-Go, is a super simple way to convert your video library to a common format that supports all of your devices like iPods, iPads, and Android devices. It'll even work with Xbox 360s and PS3s.}
 
   s.files         = `git ls-files`.split("\n")
