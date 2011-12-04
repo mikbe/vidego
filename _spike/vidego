@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+def fix_retard_namex(full_path)
+  file_name = File.basename(full_path)
+  
+  new_file = file_name.clone
+  new_file.gsub!(/^\d*_\d*_/,'')
+  new_file.gsub!(/_\w\w\d\d_/,' ')
+  
+  full_path.gsub!(file_name, new_file)
+end
+
+def fix_retard_name(full_path)
+  file_name = File.basename(full_path)
+  
+  new_file = file_name.clone
+  new_file.gsub!('.',' ')
+  new_file.gsub!(/ 720p.*/,'.mkv')
+  
+  full_path.gsub!(file_name, new_file)
+end
+
+
+ENV['FFMPEG_DATADIR'] = File.expand_path(File.join(File.dirname(__FILE__), "/ffmpeg_presets"))
+
+path = ARGV[0]
+types = ARGV[1] ? [".#{ARGV[1]}"] : ['.avi','.mov', '.mkv', '.flv', '.mpg']
+
+root_dir = File.realdirpath(path)
+mod_dir = "#{root_dir}\ -\ Kindle\ Fire"
+
+Dir["#{path}/**/*"].each do |file_name|
+
+  ext = File.extname(file_name)
+  next unless types.include?(ext)
+  
+  output_file = File.realdirpath(file_name).gsub(root_dir, mod_dir)
+  #output_file = fix_retard_name(output_file)
+  output_file.gsub!(ext, ".mp4")
+
+  FileUtils.mkdir_p(File.dirname(output_file))
+  
+  dir_path = File.realdirpath(file_name)
+  
+  #command_line = "ffmpeg -i #{file_name.gsub(' ', '\\ ')} -strict experimental -acodec aac -ab 160000 -ac 1 -f mp4 -vcodec libx264 -vpre slow -vpre ipod640 -crf 22 -video_size 320x240 #{output_file.gsub(' ', '\\ ')}"
+  command_line = "ffmpeg -i #{file_name.gsub(' ', '\\ ')} -strict experimental -acodec aac -ab 160000 -ac 2 -f mp4 -vcodec libx264 -vpre slow -vpre ipod640 -crf 22 #{output_file.gsub(' ', '\\ ')}"
+  #command_line = "ffmpeg -i #{file_name.gsub(' ', '\\ ')} -f mp4 -acodec copy -vcodec copy #{output_file.gsub(' ', '\\ ')}"
+  #command_line = "ffmpeg -i #{file_name.gsub(' ', '\\ ')} -vcodec copy -strict experimental -acodec aac -ab 160000 -ac 2 -f mp4 #{output_file.gsub(' ', '\\ ')}"
+
+  system command_line
+  
+end
